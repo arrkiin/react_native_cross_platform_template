@@ -1,9 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
 const appDirectory = path.resolve(__dirname, '../');
 
 const babelLoaderConfiguration = {
@@ -48,12 +45,6 @@ module.exports = {
     rules: [babelLoaderConfiguration, imageLoaderConfiguration],
   },
   plugins: [
-    new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new CleanWebpackPlugin(['dist']),
-    new HtmlWebpackPlugin({
-      title: 'Production',
-    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
         process.env.NODE_ENV || 'development'

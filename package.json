@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "web-dev": "webpack-dev-server --watch --inline --hot --open --config web/webpack.dev.js",
-    "web-build": "webpack --config web/webpack.prod.js",
+    "web-dev":
+      "webpack-dev-server --mode development --open --config web/webpack.dev.js",
+    "web-prod": "webpack --mode production --config web/webpack.prod.js",
+    "android-dev": "react-native run-android",
     "test": "jest"
   },
   "dependencies": {

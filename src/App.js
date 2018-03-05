@@ -31,7 +31,7 @@ class Rotater extends Component {
     Animated.loop(
       Animated.timing(this.state.spinValue, {
         toValue: 360,
-        duration: 2000,
+        duration: 4000,
         useNativeDriver: Platform.select({
           ios: true,
           android: true,
