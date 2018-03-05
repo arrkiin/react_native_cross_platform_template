@@ -6,13 +6,22 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = merge(common, {
-  devtool: 'cheap-module-source-map',
+  // devtool: 'cheap-module-source-map',
+  mode: 'production',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: '[name].js',
+    filename: '[name].bundle.web.js',
     publicPath: '/',
   },
+  optimization: {
+    splitChunks: {
+      minSize: 0,
+      chunks: 'all',
+    },
+  },
   plugins: [
+    new webpack.NamedChunksPlugin(),
+    new webpack.NamedModulesPlugin(),
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       title: 'Production',

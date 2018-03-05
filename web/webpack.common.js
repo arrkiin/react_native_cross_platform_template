@@ -18,7 +18,7 @@ const babelLoaderConfiguration = {
       // Babel configuration (or use .babelrc)
       // This aliases 'react-native' to 'react-native-web' and includes only
       // the modules needed by the app.
-      plugins: ['react-native-web'],
+      plugins: ['react-native-web', 'dynamic-import-webpack'],
       // The 'react-native' preset is recommended to match React Native's packager
       presets: ['react-native'],
     },
@@ -38,7 +38,7 @@ const imageLoaderConfiguration = {
 module.exports = {
   entry: path.resolve(appDirectory, 'index.web.js'),
   output: {
-    filename: '[name].bundle.web.js',
+    filename: 'bundle.web.js',
     path: path.resolve(appDirectory, 'dist'),
   },
   module: {
