@@ -48,6 +48,8 @@ module.exports = {
     rules: [babelLoaderConfiguration, imageLoaderConfiguration],
   },
   plugins: [
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       title: 'Production',
