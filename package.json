@@ -7,12 +7,15 @@
     "web-dev": "webpack-dev-server --open --config web/webpack.dev.js",
     "web-prod": "webpack --config web/webpack.prod.js",
     "android-dev": "react-native run-android",
+    "android-prod": "react-native run-android --variant=release",
     "test": "jest"
   },
   "dependencies": {
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-native": "0.54.0",
+    "react-native-svg": "^6.2.2",
+    "react-native-svg-web": "^1.0.1",
     "react-native-web": "^0.5.1"
   },
   "devDependencies": {

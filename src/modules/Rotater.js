@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Platform, Animated, Easing } from 'react-native';
 
-export default class Rotater extends Component {
+export default class Rotater extends PureComponent {
   state = {
     spinValue: new Animated.Value(0),
   };
@@ -28,6 +28,8 @@ export default class Rotater extends Component {
     return (
       <Animated.View
         style={{
+          borderRadius: 50,
+          margin: 48,
           transform: [{ rotate: spin }],
         }}
       >

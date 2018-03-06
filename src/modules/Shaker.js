@@ -1,45 +1,37 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Platform, Animated, Easing } from 'react-native';
 
-export default class Shaker extends Component {
+export default class Shaker extends PureComponent {
   state = {
     posModifier: new Animated.Value(0),
   };
   componentDidMount() {
     Animated.loop(
-      Animated.sequence([
-        Animated.timing(this.state.posModifier, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: Platform.select({
-            ios: true,
-            android: true,
-            default: false,
-          }),
-          // easing: Easing.linear,
+      Animated.timing(this.state.posModifier, {
+        toValue: 10,
+        duration: 2000,
+        useNativeDriver: Platform.select({
+          ios: true,
+          android: true,
+          default: false,
         }),
-        Animated.timing(this.state.posModifier, {
-          toValue: 0,
-          duration: 1000,
-          useNativeDriver: Platform.select({
-            ios: true,
-            android: true,
-            default: false,
-          }),
-          // easing: Easing.linear,
-        }),
-      ])
+        easing: Easing.inOut(Easing.linear),
+      })
     ).start();
   }
   render() {
-    const modifier = this.state.posModifier.interpolate({
-      inputRange: [0, 1],
-      outputRange: [-50, 50],
-    });
     return (
       <Animated.View
         style={{
-          transform: [{ translateX: modifier }],
+          marginBottom: 10,
+          transform: [
+            {
+              translateX: this.state.posModifier.interpolate({
+                inputRange: [0, 5, 10],
+                outputRange: [-50, 50, -50],
+              }),
+            },
+          ],
         }}
       >
         {this.props.children}

@@ -29,6 +29,8 @@ build/
 .gradle
 local.properties
 *.iml
+my-release-key.keystore
+gradle.properties
 
 # node.js
 #

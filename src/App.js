@@ -4,10 +4,11 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Platform, StyleSheet, Text, View, Image } from 'react-native';
 import Rotater from './modules/Rotater';
 import Shaker from './modules/Shaker';
+import SvgRect from './modules/SvgRect';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -17,7 +18,7 @@ const instructions = Platform.select({
   web: 'Press reload',
 });
 
-export default class App extends Component {
+export default class App extends PureComponent {
   render() {
     return (
       <View style={styles.container}>
@@ -28,8 +29,9 @@ export default class App extends Component {
           <Image style={styles.image} source={require('./assets/react.png')} />
         </Rotater>
         <Shaker>
-          <Image style={styles.image} source={require('./assets/react.png')} />
+          <Image style={styles.image2} source={require('./assets/react.png')} />
         </Shaker>
+        <SvgRect />
       </View>
     );
   }
@@ -40,7 +42,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    // backgroundColor: '#F5FCFF',
   },
   welcome: {
     fontSize: 20,
@@ -55,5 +57,9 @@ const styles = StyleSheet.create({
   image: {
     width: 200,
     height: 200,
+  },
+  image2: {
+    width: 50,
+    height: 50,
   },
 });
