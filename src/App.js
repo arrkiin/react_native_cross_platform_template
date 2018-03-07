@@ -9,6 +9,7 @@ import { Platform, StyleSheet, Text, View, Image } from 'react-native';
 import Rotater from './modules/Rotater';
 import Shaker from './modules/Shaker';
 import SvgRect from './modules/SvgRect';
+import Spawn from './modules/Spawn';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -28,9 +29,9 @@ export default class App extends PureComponent {
         <Rotater>
           <Image style={styles.image} source={require('./assets/react.png')} />
         </Rotater>
-        <Shaker>
+        <Spawn>
           <Image style={styles.image2} source={require('./assets/react.png')} />
-        </Shaker>
+        </Spawn>
         <SvgRect />
       </View>
     );
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#F5FCFF',
+    backgroundColor: '#F5FCFF',
   },
   welcome: {
     fontSize: 20,
