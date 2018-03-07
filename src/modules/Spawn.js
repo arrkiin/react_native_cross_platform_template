@@ -34,16 +34,16 @@ export default class Rotater extends PureComponent {
   }
   render() {
     let { scaleValue } = this.state;
-    const spin = this.state.scaleValue.interpolate({
+    const scale = this.state.scaleValue.interpolate({
       inputRange: [0, 10],
-      outputRange: [0, 0.8],
+      outputRange: [0.01, 0.8],
     });
     return (
       <Animated.View
         style={{
           borderRadius: 50,
           marginBottom: 20,
-          transform: [{ scale: spin }],
+          transform: [{ scale: scale }],
         }}
       >
         {this.props.children}
