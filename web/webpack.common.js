@@ -9,6 +9,8 @@ const babelLoaderConfiguration = {
   include: [
     path.resolve(appDirectory, 'index.web.js'),
     path.resolve(appDirectory, 'src'),
+    path.resolve(appDirectory, 'node_modules/react-native-svg-web'),
+    path.resolve(appDirectory, 'node_modules/react-native-animatable'),
     //   path.resolve(appDirectory, 'node_modules/react-native-uncompiled')
   ],
   use: {
@@ -53,6 +55,7 @@ module.exports = {
     }),
   ],
   resolve: {
+    symlinks: false,
     extensions: ['.web.js', '.js'],
     alias: {
       'react-native-svg': 'react-native-svg-web',
