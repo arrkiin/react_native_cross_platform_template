@@ -2,14 +2,14 @@ import React, { PureComponent } from 'react';
 import { Platform, Animated, Easing } from 'react-native';
 import glamorous from 'glamorous-native';
 
-const { View } = glamorous;
-
 const glamorousAnimatedComponentFactory = glamorous(Animated.View);
 const AnimatedView = glamorousAnimatedComponentFactory({
-  marginBottom: 50,
-  borderWidth: 2,
-  padding: 10,
+  alignContent: 'center',
+  justifyContent: 'center',
+  width: 50,
+  height: 50,
 });
+// AnimatedView.defaultProps = { renderToHardwareTextureAndroid: 'true' };
 AnimatedView.propsAreStyleOverrides = true;
 
 export default class Rotater extends PureComponent {
@@ -44,7 +44,6 @@ export default class Rotater extends PureComponent {
     ).start();
   }
   render() {
-    let { scaleValue } = this.state;
     const scale = this.state.scaleValue.interpolate({
       inputRange: [0, 10],
       outputRange: [0.01, 0.8],
