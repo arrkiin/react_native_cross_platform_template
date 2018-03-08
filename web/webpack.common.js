@@ -11,6 +11,7 @@ const babelLoaderConfiguration = {
     path.resolve(appDirectory, 'src'),
     path.resolve(appDirectory, 'node_modules/react-native-svg-web'),
     path.resolve(appDirectory, 'node_modules/react-native-animatable'),
+    path.resolve(appDirectory, 'node_modules/glamorous-native'),
     //   path.resolve(appDirectory, 'node_modules/react-native-uncompiled')
   ],
   use: {

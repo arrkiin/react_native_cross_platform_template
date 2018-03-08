@@ -1,5 +1,16 @@
 import React, { PureComponent } from 'react';
 import { Platform, Animated, Easing } from 'react-native';
+import glamorous from 'glamorous-native';
+
+const { View } = glamorous;
+
+const glamorousAnimatedComponentFactory = glamorous(Animated.View);
+const AnimatedView = glamorousAnimatedComponentFactory({
+  marginBottom: 50,
+  borderWidth: 2,
+  padding: 10,
+});
+AnimatedView.propsAreStyleOverrides = true;
 
 export default class Rotater extends PureComponent {
   state = {
@@ -39,15 +50,13 @@ export default class Rotater extends PureComponent {
       outputRange: [0.01, 0.8],
     });
     return (
-      <Animated.View
+      <AnimatedView
         style={{
-          borderRadius: 50,
-          marginBottom: 20,
           transform: [{ scale: scale }],
         }}
       >
         {this.props.children}
-      </Animated.View>
+      </AnimatedView>
     );
   }
 }
