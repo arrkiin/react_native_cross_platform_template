@@ -54,6 +54,7 @@ module.exports = {
       ),
       __DEV__: process.env.NODE_ENV === 'production' || true,
     }),
+    new webpack.IgnorePlugin(/ReactNativeComponentTree/),
   ],
   resolve: {
     symlinks: false,

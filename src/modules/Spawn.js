@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Platform, Animated, Easing } from 'react-native';
+import { Platform, Animated, Image, StyleSheet } from 'react-native';
 import glamorous from 'glamorous-native';
 
 const glamorousAnimatedComponentFactory = glamorous(Animated.View);
@@ -12,50 +12,50 @@ const AnimatedView = glamorousAnimatedComponentFactory({
 // AnimatedView.defaultProps = { renderToHardwareTextureAndroid: 'true' };
 AnimatedView.propsAreStyleOverrides = true;
 
-export default class Rotater extends PureComponent {
+const NORMAL = require('../assets/react.png');
+const TOUCHED = require('../assets/react1.png');
+
+export default class Spawn extends PureComponent {
   state = {
-    scaleValue: new Animated.Value(0),
+    touched: false,
   };
-  componentDidMount() {
-    Animated.loop(
-      Animated.sequence([
-        Animated.spring(this.state.scaleValue, {
-          toValue: 10,
-          speed: 0.1,
-          bounciness: 5,
-          useNativeDriver: Platform.select({
-            ios: true,
-            android: true,
-            default: false,
-          }),
-        }),
-        Animated.timing(this.state.scaleValue, {
-          toValue: 0,
-          duration: 1000,
-          easing: Easing.linear,
-          useNativeDriver: Platform.select({
-            ios: true,
-            android: true,
-            default: false,
-          }),
-        }),
-        Animated.delay(2000),
-      ])
-    ).start();
+  touch() {
+    console.log('spawn touched');
+    this.setState({ touched: true });
+  }
+  untouch() {
+    this.setState({ touched: false });
   }
   render() {
-    const scale = this.state.scaleValue.interpolate({
+    const scale = this.props.scaleValue.interpolate({
       inputRange: [0, 10],
       outputRange: [0.01, 0.8],
     });
     return (
       <AnimatedView
+        onStartShouldSetResponder={() => false}
+        pointerEvents="none"
+        id="test"
+        {...Platform.select({ web: { pointerEvents: 'none' } })}
         style={{
           transform: [{ scale: scale }],
         }}
       >
-        {this.props.children}
+        <Image
+          id="image"
+          draggable={false}
+          style={styles.image2}
+          ref={ref => (this.image = ref)}
+          source={this.state.touched ? TOUCHED : NORMAL}
+        />
       </AnimatedView>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  image2: {
+    width: 50,
+    height: 50,
+  },
+});
