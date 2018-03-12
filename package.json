@@ -11,6 +11,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "glamorous-native": "https://github.com/arrkiin/glamorous-native#native-web-fix",
     "lodash": "^4.17.5",
     "react": "^16.2.0",
@@ -18,7 +19,8 @@
     "react-native": "0.54.0",
     "react-native-svg": "^6.2.2",
     "react-native-svg-web": "^1.0.1",
-    "react-native-web": "^0.5.1"
+    "react-native-web": "^0.5.1",
+    "react-navigation": "^1.5.1"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.2",

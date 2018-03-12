@@ -12,6 +12,15 @@ const babelLoaderConfiguration = {
     path.resolve(appDirectory, 'node_modules/react-native-svg-web'),
     path.resolve(appDirectory, 'node_modules/react-native-animatable'),
     path.resolve(appDirectory, 'node_modules/glamorous-native'),
+    path.resolve(appDirectory, 'node_modules/react-navigation'),
+    path.resolve(appDirectory, 'node_modules/react-native-tab-view'),
+    path.resolve(appDirectory, 'node_modules/react-native-drawer-layout'),
+    path.resolve(
+      appDirectory,
+      'node_modules/react-native-drawer-layout-polyfill'
+    ),
+    path.resolve(appDirectory, 'node_modules/react-native-dismiss-keyboard'),
+    path.resolve(appDirectory, 'node_modules/react-native-safe-area-view'),
     //   path.resolve(appDirectory, 'node_modules/react-native-uncompiled')
   ],
   use: {
@@ -39,7 +48,7 @@ const imageLoaderConfiguration = {
 };
 
 module.exports = {
-  entry: path.resolve(appDirectory, 'index.web.js'),
+  entry: ['babel-polyfill', path.resolve(appDirectory, 'index.web.js')],
   output: {
     filename: 'bundle.web.js',
     path: path.resolve(appDirectory, 'dist'),

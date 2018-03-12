@@ -21,7 +21,6 @@ module.exports = merge(common, {
   plugins: [
     new webpack.NamedChunksPlugin(),
     new webpack.NamedModulesPlugin(),
-    new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({

@@ -14,7 +14,9 @@ import {
   Animated,
   Easing,
   PanResponder,
+  Button,
 } from 'react-native';
+import { StackNavigator } from 'react-navigation';
 import Rotater from './modules/Rotater';
 import Shaker from './modules/Shaker';
 import SvgRect from './modules/SvgRect';
@@ -47,18 +49,30 @@ const instructions = Platform.select({
 
 const SIZE = 10;
 
-export default class App extends PureComponent {
+class Test extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Test Screen</Text>
+        <Button
+          title="Go back"
+          onPress={() => this.props.navigation.goBack()}
+        />
+      </View>
+    );
+  }
+}
+
+class HomeScreen extends PureComponent {
   state = {
     scaleValue: new Animated.Value(0),
   };
   onPanResponderGrantHandler = (evt, gestureState) => {
     const target = evt.target;
-    // The gesture has started. Show visual feedback so the user knows
-    // what is happening!
-    // gestureState.d{x,y} will be set to zero now
     if (Platform.OS !== 'web') {
-      console.log('onPanResponderGrantHandler', getInstanceFromNode(target));
-      getInstanceFromNode(target);
+      if (this.field[getInstanceFromNode(target).memoizedProps.id]) {
+        this.field[getInstanceFromNode(target).memoizedProps.id].touch();
+      }
     }
     if (this.field[evt.nativeEvent.target.id]) {
       this.field[evt.nativeEvent.target.id].touch();
@@ -70,68 +84,59 @@ export default class App extends PureComponent {
       this.field[evt.nativeEvent.target.id].untouch();
     }
     if (Platform.OS !== 'web') {
-      console.log('onPanResponderRelease', getInstanceFromNode(target));
-      getInstanceFromNode(target);
+      if (this.field[getInstanceFromNode(target).memoizedProps.id]) {
+        this.field[getInstanceFromNode(target).memoizedProps.id].untouch();
+      }
+    }
+    for (let field_id in this.field) {
+      this.field[field_id].untouch();
     }
   };
   onPanResponderTerminate = (evt, gestureState) => {
+    console.log('terminate');
     const target = evt.target;
     if (this.field[evt.nativeEvent.target.id]) {
       this.field[evt.nativeEvent.target.id].untouch();
     }
     if (Platform.OS !== 'web') {
-      console.log('onPanResponderTerminate', getInstanceFromNode(target));
-      getInstanceFromNode(target);
+      if (this.field[getInstanceFromNode(target).memoizedProps.id]) {
+        this.field[getInstanceFromNode(target).memoizedProps.id].untouch();
+      }
     }
   };
   onPanResponderMoveHandler = (evt, gestureState) => {
+    if (this.field[evt.nativeEvent.target.id]) {
+      this.field[evt.nativeEvent.target.id].touch();
+    }
+    console.log(gestureState);
     // The most recent move distance is gestureState.move{X,Y}
     // The accumulated gesture distance since becoming responder is
     // gestureState.d{x,y}
-    const target = evt.target;
-    if (Platform.OS !== 'web') {
-      console.log('onPanResponderMoveHandler', getInstanceFromNode(target));
-      getInstanceFromNode(target);
-    }
+    // const target = evt.target;
+    // if (Platform.OS !== 'web') {
+    //   console.log('onPanResponderMoveHandler', getInstanceFromNode(target));
+    //   getInstanceFromNode(target);
+    // }
   };
   createPanResponder = () => {
     this.panResponder = PanResponder.create({
       // Ask to be the responder:
-      onStartShouldSetPanResponder: (evt, gestureState) => {
-        const target = evt.target;
-        if (Platform.OS !== 'web') {
-          console.log(
-            'onStartShouldSetPanResponder',
-            getInstanceFromNode(target)
-          );
-          getInstanceFromNode(target);
-        }
-        return false;
-      },
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => {
-        const target = evt.target;
-        if (Platform.OS !== 'web') {
-          console.log(
-            'onStartShouldSetPanResponderCapture',
-            getInstanceFromNode(target)
-          );
-          getInstanceFromNode(target);
-        }
-        return true;
-      },
-      onMoveShouldSetPanResponder: (evt, gestureState) => false,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderGrant: this.onPanResponderGrantHandler,
       onPanResponderMove: this.onPanResponderMoveHandler,
       onPanResponderTerminationRequest: (evt, gestureState) => {
-        const target = evt.target;
-        if (Platform.OS !== 'web') {
-          console.log(
-            'onPanResponderTerminationRequest',
-            getInstanceFromNode(target)
-          );
-          getInstanceFromNode(target);
-        }
+        console.log('terminate');
+        // const target = evt.target;
+        // if (Platform.OS !== 'web') {
+        //   console.log(
+        //     'onPanResponderTerminationRequest',
+        //     getInstanceFromNode(target)
+        //   );
+        //   getInstanceFromNode(target);
+        // }
         return true;
       },
       onPanResponderRelease: this.onPanResponderRelease,
@@ -155,16 +160,22 @@ export default class App extends PureComponent {
       <View style={styles.rowView} id="row" key={'row_' + row}>
         {_.range(row * SIZE, row * SIZE + SIZE).map(col => (
           <View style={styles.colView} key={'field_' + col}>
+            <Spawn
+              pointerEvents="none"
+              ref={ref => (this.field['col_' + col] = ref)}
+              scaleValue={this.state.scaleValue}
+            />
             <View
-              style={{ backgroundColor: '#ffffff', width: 50, height: 50 }}
               id={'col_' + col}
-              key={'field_' + col}
-            >
-              <Spawn
-                ref={ref => (this.field['col_' + col] = ref)}
-                scaleValue={this.state.scaleValue}
-              />
-            </View>
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: 30,
+                height: 30,
+                backgroundColor: 'transparent',
+              }}
+            />
           </View>
         ))}
       </View>
@@ -178,14 +189,20 @@ export default class App extends PureComponent {
     //     />
     //   </Rotater>
     // );
-    grid = (
-      <View style={styles.colView} id={'col_1'} key={'field_1'}>
-        <Spawn
-          ref={ref => (this.field['col_1'] = ref)}
-          scaleValue={this.state.scaleValue}
-        />
-      </View>
-    );
+    // grid = (
+    //   <View style={styles.colView} id={'col_1'} key={'field_1'}>
+    //     <View
+    //       style={{ backgroundColor: 'transparent', width: 80, height: 80 }}
+    //       id={'col_1'}
+    //       key={'col_1'}
+    //     >
+    //       <Spawn
+    //         ref={ref => (this.field['col_1'] = ref)}
+    //         scaleValue={this.state.scaleValue}
+    //       />
+    //     </View>
+    //   </View>
+    // );
     return (
       <View
         style={{ width: 30 * SIZE, height: 30 * SIZE, alignSelf: 'center' }}
@@ -196,31 +213,31 @@ export default class App extends PureComponent {
     );
   }
   startLoop = () => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.spring(this.state.scaleValue, {
-          toValue: 10,
-          speed: 0.1,
-          bounciness: 5,
-          useNativeDriver: Platform.select({
-            ios: true,
-            android: true,
-            default: false,
-          }),
-        }),
-        Animated.timing(this.state.scaleValue, {
-          toValue: 0,
-          duration: 1000,
-          easing: Easing.linear,
-          useNativeDriver: Platform.select({
-            ios: true,
-            android: true,
-            default: false,
-          }),
-        }),
-        Animated.delay(2000),
-      ])
-    ).start();
+    // Animated.loop(
+    // Animated.sequence([
+    Animated.spring(this.state.scaleValue, {
+      toValue: 10,
+      speed: 0.1,
+      bounciness: 5,
+      useNativeDriver: Platform.select({
+        ios: true,
+        android: true,
+        default: false,
+      }),
+    }).start();
+    //   Animated.timing(this.state.scaleValue, {
+    //     toValue: 0,
+    //     duration: 1000,
+    //     easing: Easing.linear,
+    //     useNativeDriver: Platform.select({
+    //       ios: true,
+    //       android: true,
+    //       default: false,
+    //     }),
+    //   }),
+    //   Animated.delay(2000),
+    // ])
+    // ).start();
   };
 
   render() {
@@ -239,9 +256,78 @@ export default class App extends PureComponent {
       </React.Fragment>
     );
     toRender = this.get_grid();
-    return <View style={styles.container}>{toRender}</View>;
+    let button = (
+      <Button
+        title="Go to Test screen"
+        onPress={() => this.props.navigation.navigate('Test')}
+      />
+    );
+    button = null;
+    return (
+      <View style={styles.container}>
+        {toRender}
+        {button}
+      </View>
+    );
   }
 }
+
+let MyTransition = (index, position) => {
+  const inputRange = [index - 1, index, index + 1];
+  const outputRange = [0, 1, 1];
+  const opacity = position.interpolate({
+    inputRange,
+    outputRange,
+  });
+
+  const scaleY = position.interpolate({
+    inputRange,
+    outputRange,
+  });
+
+  return {
+    opacity,
+    // transform: [{ scaleY }],
+  };
+};
+
+const MyTransitionSpec = {
+  duration: 600,
+  easing: Easing.bezier(0.2833, 0.99, 0.31833, 0.99),
+  timing: Animated.timing,
+};
+
+let TransitionConfiguration = () => {
+  return {
+    transitionSpec: MyTransitionSpec,
+    // Define scene interpolation, eq. custom transition
+    screenInterpolator: sceneProps => {
+      const { position, scene } = sceneProps;
+      const { index } = scene;
+      return MyTransition(index, position);
+    },
+  };
+};
+
+export default StackNavigator(
+  {
+    Home: {
+      screen: HomeScreen,
+      index: 0,
+    },
+    Test: {
+      screen: Test,
+      index: 1,
+    },
+  },
+  {
+    initialRouteName: 'Home',
+    mode: 'modal',
+    headerMode: 'none',
+    transitionConfig: TransitionConfiguration,
+    onTransitionStart: object => console.log(object, 'start'),
+  }
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -262,16 +348,17 @@ const styles = StyleSheet.create({
   },
   rowView: {
     flexDirection: 'row',
-    width: 300,
+    // width: 300,
+    alignContent: 'center',
+    justifyContent: 'center',
     overflow: 'visible',
   },
   colView: {
     width: 30,
     height: 30,
-    alignItems: 'center',
+    alignContent: 'center',
     justifyContent: 'center',
     overflow: 'visible',
-    backgroundColor: 'white',
   },
   image: {
     width: 200,
