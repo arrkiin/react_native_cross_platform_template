@@ -192,6 +192,24 @@ class HomeScreen extends PureComponent {
       left: x * SIZE + PADDING,
     };
   };
+  mouseMoveHandler = null;
+  mouseUpHandler = null;
+  setMouseMoveHandler = handler => {
+    this.mouseMoveHandler = handler;
+  };
+  setMouseUpHandler = handler => {
+    this.mouseUpHandler = handler;
+  };
+  onMouseMoveHandler = event => {
+    if (this.mouseMoveHandler) {
+      this.mouseMoveHandler(event);
+    }
+  };
+  onMouseUpHandler = event => {
+    if (this.mouseUpHandler) {
+      this.mouseUpHandler(event);
+    }
+  };
   get_grid() {
     let grid = Array.from({ length: ELEMENTS }, (_, i) => i).map(row => (
       <View
@@ -262,8 +280,21 @@ class HomeScreen extends PureComponent {
             top: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
             left: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
           }}
+          onMouseMove={this.onMouseMoveHandler}
+          onMouseUp={this.onMouseUpHandler}
         >
-          <Actor style={{ position: 'absolute', ...this.getPosition(2, 1) }} />
+          <Actor
+            name="first"
+            setMouseMoveHandler={this.setMouseMoveHandler}
+            setMouseUpHandler={this.setMouseUpHandler}
+            style={{ position: 'absolute', ...this.getPosition(2, 1) }}
+          />
+          <Actor
+            name="second"
+            setMouseMoveHandler={this.setMouseMoveHandler}
+            setMouseUpHandler={this.setMouseUpHandler}
+            style={{ position: 'absolute', ...this.getPosition(6, 4) }}
+          />
         </View>
       </View>
     );
