@@ -21,23 +21,23 @@ import Rotater from './modules/Rotater';
 import Shaker from './modules/Shaker';
 import SvgRect from './modules/SvgRect';
 import Spawn from './modules/Spawn';
-import _ from 'lodash';
-import glamorous from 'glamorous-native';
+import Actor from './modules/Actor';
+// import glamorous from 'glamorous-native';
 import { getInstanceFromNode } from './utils';
 
-const RowView = glamorous.view({
-  flexDirection: 'row',
-  width: 300,
-  overflow: 'visible',
-});
+// const RowView = glamorous.view({
+//   flexDirection: 'row',
+//   width: 300,
+//   overflow: 'visible',
+// });
 
-const ColView = glamorous.view({
-  width: 30,
-  height: 30,
-  alignItems: 'center',
-  justifyContent: 'center',
-  overflow: 'visible',
-});
+// const ColView = glamorous.view({
+//   width: 30,
+//   height: 30,
+//   alignItems: 'center',
+//   justifyContent: 'center',
+//   overflow: 'visible',
+// });
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -47,7 +47,9 @@ const instructions = Platform.select({
   web: 'Press reload',
 });
 
-const SIZE = 10;
+const SIZE = 30;
+const ELEMENTS = 10;
+const PADDING = 15;
 
 class Test extends React.Component {
   render() {
@@ -64,58 +66,86 @@ class Test extends React.Component {
 }
 
 class HomeScreen extends PureComponent {
+  touches = [];
   state = {
     scaleValue: new Animated.Value(0),
   };
+  checkRelease = ({ touches, changedTouches }) => {
+    // const releasedTouches = changedTouches
+    //   .keys()
+    //   .filter(key => !touches.hasOwnProperty(key));
+    console.log(
+      touches,
+      changedTouches,
+      changedTouches.filter(obj => {
+        return !touches.find(ch => ch.identifier === obj.identifier);
+      })
+    );
+  };
+  isLocalEvent = evt => {
+    if (
+      evt.nativeEvent.locationX < PADDING ||
+      evt.nativeEvent.locationY < PADDING ||
+      evt.nativeEvent.locationX > SIZE * ELEMENTS + PADDING ||
+      evt.nativeEvent.locationY > SIZE * ELEMENTS + PADDING ||
+      evt.nativeEvent.locationX === evt.nativeEvent.pageX ||
+      evt.nativeEvent.locationY === evt.nativeEvent.pageY
+    ) {
+      return false;
+    }
+    return true;
+  };
   onPanResponderGrantHandler = (evt, gestureState) => {
-    const target = evt.target;
-    if (Platform.OS !== 'web') {
-      if (this.field[getInstanceFromNode(target).memoizedProps.id]) {
-        this.field[getInstanceFromNode(target).memoizedProps.id].touch();
-      }
+    evt.preventDefault();
+    if (!this.isLocalEvent(evt)) {
+      return;
     }
-    if (this.field[evt.nativeEvent.target.id]) {
-      this.field[evt.nativeEvent.target.id].touch();
-    }
+    console.log(
+      'grant',
+      parseInt((evt.nativeEvent.locationX - PADDING) / SIZE),
+      parseInt((evt.nativeEvent.locationY - PADDING) / SIZE)
+    );
   };
   onPanResponderRelease = (evt, gestureState) => {
-    const target = evt.target;
-    if (this.field[evt.nativeEvent.target.id]) {
-      this.field[evt.nativeEvent.target.id].untouch();
+    evt.preventDefault();
+    if (!this.isLocalEvent(evt)) {
+      return;
     }
-    if (Platform.OS !== 'web') {
-      if (this.field[getInstanceFromNode(target).memoizedProps.id]) {
-        this.field[getInstanceFromNode(target).memoizedProps.id].untouch();
-      }
-    }
-    for (let field_id in this.field) {
-      this.field[field_id].untouch();
-    }
+    this.checkRelease(evt.nativeEvent);
+    console.log(
+      'release',
+      parseInt((evt.nativeEvent.locationX - PADDING) / SIZE),
+      parseInt((evt.nativeEvent.locationY - PADDING) / SIZE)
+    );
   };
   onPanResponderTerminate = (evt, gestureState) => {
-    console.log('terminate');
-    const target = evt.target;
-    if (this.field[evt.nativeEvent.target.id]) {
-      this.field[evt.nativeEvent.target.id].untouch();
+    evt.preventDefault();
+    if (!this.isLocalEvent(evt)) {
+      return;
     }
-    if (Platform.OS !== 'web') {
-      if (this.field[getInstanceFromNode(target).memoizedProps.id]) {
-        this.field[getInstanceFromNode(target).memoizedProps.id].untouch();
-      }
-    }
+    console.log(
+      'terminate',
+      parseInt((evt.nativeEvent.locationX - PADDING) / SIZE),
+      parseInt((evt.nativeEvent.locationY - PADDING) / SIZE)
+    );
   };
   onPanResponderMoveHandler = (evt, gestureState) => {
-    if (this.field[evt.nativeEvent.target.id]) {
-      this.field[evt.nativeEvent.target.id].touch();
+    evt.preventDefault();
+    if (!this.isLocalEvent(evt)) {
+      return;
     }
-    console.log(gestureState);
-    // The most recent move distance is gestureState.move{X,Y}
-    // The accumulated gesture distance since becoming responder is
-    // gestureState.d{x,y}
-    // const target = evt.target;
-    // if (Platform.OS !== 'web') {
-    //   console.log('onPanResponderMoveHandler', getInstanceFromNode(target));
-    //   getInstanceFromNode(target);
+    this.checkRelease(evt.nativeEvent);
+    // for (let key in evt.nativeEvent.touches) {
+    //   console.log(
+    //     'move',
+    //     evt.nativeEvent.changedTouches[key].identifier,
+    //     parseInt(
+    //       (evt.nativeEvent.changedTouches[key].locationX - PADDING) / SIZE
+    //     ),
+    //     parseInt(
+    //       (evt.nativeEvent.changedTouches[key].locationY - PADDING) / SIZE
+    //     )
+    //   );
     // }
   };
   createPanResponder = () => {
@@ -127,18 +157,7 @@ class HomeScreen extends PureComponent {
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
       onPanResponderGrant: this.onPanResponderGrantHandler,
       onPanResponderMove: this.onPanResponderMoveHandler,
-      onPanResponderTerminationRequest: (evt, gestureState) => {
-        console.log('terminate');
-        // const target = evt.target;
-        // if (Platform.OS !== 'web') {
-        //   console.log(
-        //     'onPanResponderTerminationRequest',
-        //     getInstanceFromNode(target)
-        //   );
-        //   getInstanceFromNode(target);
-        // }
-        return true;
-      },
+      onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: this.onPanResponderRelease,
       onPanResponderTerminate: this.onPanResponderTerminate,
       onShouldBlockNativeResponder: (evt, gestureState) => {
@@ -153,28 +172,44 @@ class HomeScreen extends PureComponent {
   }
   componentDidMount() {
     this.startLoop();
+    // this.loop();
   }
+  loop = time => {
+    console.log(time);
+    requestAnimationFrame(this.loop);
+  };
+  shouldHavePointerEvents = () => {
+    return Platform.OS === 'web' ? { pointerEvents: 'none' } : {};
+  };
   field = {};
+  getPosition = (x, y) => {
+    console.log({
+      top: y * SIZE - SIZE / 2,
+      left: x * SIZE - SIZE / 2,
+    });
+    return {
+      top: y * SIZE + PADDING,
+      left: x * SIZE + PADDING,
+    };
+  };
   get_grid() {
-    let grid = _.range(0, SIZE).map(row => (
-      <View style={styles.rowView} id="row" key={'row_' + row}>
-        {_.range(row * SIZE, row * SIZE + SIZE).map(col => (
-          <View style={styles.colView} key={'field_' + col}>
+    let grid = Array.from({ length: ELEMENTS }, (_, i) => i).map(row => (
+      <View
+        {...this.shouldHavePointerEvents()}
+        style={styles.rowView}
+        id="row"
+        key={'row_' + row}
+      >
+        {Array.from({ length: ELEMENTS }, (_, i) => row + i).map(col => (
+          <View
+            {...this.shouldHavePointerEvents()}
+            style={styles.colView}
+            key={'field_' + col}
+          >
             <Spawn
               pointerEvents="none"
               ref={ref => (this.field['col_' + col] = ref)}
               scaleValue={this.state.scaleValue}
-            />
-            <View
-              id={'col_' + col}
-              style={{
-                position: 'absolute',
-                left: 0,
-                top: 0,
-                width: 30,
-                height: 30,
-                backgroundColor: 'transparent',
-              }}
             />
           </View>
         ))}
@@ -204,11 +239,32 @@ class HomeScreen extends PureComponent {
     //   </View>
     // );
     return (
-      <View
-        style={{ width: 30 * SIZE, height: 30 * SIZE, alignSelf: 'center' }}
-        {...this.panResponder.panHandlers}
-      >
-        {grid}
+      <View>
+        <View
+          style={{
+            width: 30 * ELEMENTS + 2 * PADDING,
+            height: 30 * ELEMENTS + 2 * PADDING,
+            position: 'absolute',
+            top: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
+            left: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
+          }}
+          // {...this.panResponder.panHandlers}
+        >
+          <View style={{ padding: PADDING, backgroundColor: 'lightslategray' }}>
+            {grid}
+          </View>
+        </View>
+        <View
+          style={{
+            width: 30 * ELEMENTS + 2 * PADDING,
+            height: 30 * ELEMENTS + 2 * PADDING,
+            position: 'absolute',
+            top: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
+            left: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
+          }}
+        >
+          <Actor style={{ position: 'absolute', ...this.getPosition(2, 1) }} />
+        </View>
       </View>
     );
   }

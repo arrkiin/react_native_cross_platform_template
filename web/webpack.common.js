@@ -33,6 +33,11 @@ const babelLoaderConfiguration = {
       plugins: ['react-native-web', 'dynamic-import-webpack'],
       // The 'react-native' preset is recommended to match React Native's packager
       presets: ['react-native'],
+      env: {
+        production: {
+          presets: ['react-optimize'],
+        },
+      },
     },
   },
 };
