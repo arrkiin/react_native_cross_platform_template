@@ -54,7 +54,14 @@ const PADDING = 15;
 class Test extends React.Component {
   render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'silver',
+        }}
+      >
         <Text>Test Screen</Text>
         <Button
           title="Go back"
@@ -192,23 +199,60 @@ class HomeScreen extends PureComponent {
       left: x * SIZE + PADDING,
     };
   };
-  mouseMoveHandler = null;
-  mouseUpHandler = null;
-  setMouseMoveHandler = handler => {
-    this.mouseMoveHandler = handler;
+  touchHandler = {};
+  addTouchHandler = (touchId, object) => {
+    this.touchHandler[touchId] = object;
+    console.log(this.touchHandler);
   };
-  setMouseUpHandler = handler => {
-    this.mouseUpHandler = handler;
+  removeTouchHandler = touchId => {
+    this.touchHandler[touchId] = null;
+    console.log(touchId, this.touchHandler);
   };
-  onMouseMoveHandler = event => {
-    if (this.mouseMoveHandler) {
-      this.mouseMoveHandler(event);
+  getTouchHandlerObject = e =>
+    (this.state.touchId = Platform.select({
+      web: this.touchHandler[1],
+      default: this.touchHandler[e.nativeEvent.identifier],
+    }));
+  onMouseMoveHandler = e => {
+    const handlerObject = this.getTouchHandlerObject(e);
+    if (handlerObject) {
+      handlerObject.onTouchMoveHandler(e);
     }
   };
-  onMouseUpHandler = event => {
-    if (this.mouseUpHandler) {
-      this.mouseUpHandler(event);
+  onMouseUpHandler = e => {
+    const handlerObject = this.getTouchHandlerObject(e);
+    if (handlerObject) {
+      handlerObject.onTouchEndHandler(e);
     }
+  };
+  onTouchMoveHandler = e => {
+    const handlerObject = this.getTouchHandlerObject(e);
+    if (handlerObject) {
+      handlerObject.onTouchMoveHandler(e);
+    }
+  };
+  onTouchEndHandler = e => {
+    console.log(e.nativeEvent);
+    const handlerObject = this.getTouchHandlerObject(e);
+    if (handlerObject) {
+      handlerObject.onTouchEndHandler(e);
+    }
+  };
+  getTouchHandler = () => {
+    return Platform.select({
+      web: {
+        onMouseMove: this.onMouseMoveHandler,
+        onMouseUp: this.onMouseUpHandler,
+        onTouchMove: this.onTouchMoveHandler,
+        onTouchEnd: this.onTouchEndHandler,
+      },
+      default: {
+        onMouseMove: this.onMouseMoveHandler,
+        onMouseUp: this.onMouseUpHandler,
+        onTouchMove: this.onTouchMoveHandler,
+        onTouchEnd: this.onTouchEndHandler,
+      },
+    });
   };
   get_grid() {
     let grid = Array.from({ length: ELEMENTS }, (_, i) => i).map(row => (
@@ -257,14 +301,21 @@ class HomeScreen extends PureComponent {
     //   </View>
     // );
     return (
-      <View>
+      <View
+        style={{
+          flex: 0,
+          width: 30 * ELEMENTS + 2 * PADDING,
+          height: 30 * ELEMENTS + 2 * PADDING,
+          backgroundColor: 'white',
+        }}
+      >
         <View
           style={{
             width: 30 * ELEMENTS + 2 * PADDING,
             height: 30 * ELEMENTS + 2 * PADDING,
             position: 'absolute',
-            top: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
-            left: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
+            // top: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
+            // left: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
           }}
           // {...this.panResponder.panHandlers}
         >
@@ -277,22 +328,21 @@ class HomeScreen extends PureComponent {
             width: 30 * ELEMENTS + 2 * PADDING,
             height: 30 * ELEMENTS + 2 * PADDING,
             position: 'absolute',
-            top: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
-            left: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
+            // top: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
+            // left: 0 - (30 * ELEMENTS + 2 * PADDING) / 2,
           }}
-          onMouseMove={this.onMouseMoveHandler}
-          onMouseUp={this.onMouseUpHandler}
+          {...this.getTouchHandler()}
         >
           <Actor
             name="first"
-            setMouseMoveHandler={this.setMouseMoveHandler}
-            setMouseUpHandler={this.setMouseUpHandler}
+            addTouchHandler={this.addTouchHandler}
+            removeTouchHandler={this.removeTouchHandler}
             style={{ position: 'absolute', ...this.getPosition(2, 1) }}
           />
           <Actor
             name="second"
-            setMouseMoveHandler={this.setMouseMoveHandler}
-            setMouseUpHandler={this.setMouseUpHandler}
+            addTouchHandler={this.addTouchHandler}
+            removeTouchHandler={this.removeTouchHandler}
             style={{ position: 'absolute', ...this.getPosition(6, 4) }}
           />
         </View>
@@ -344,14 +394,18 @@ class HomeScreen extends PureComponent {
     );
     toRender = this.get_grid();
     let button = (
-      <Button
-        title="Go to Test screen"
-        onPress={() => this.props.navigation.navigate('Test')}
-      />
+      <View style={{ flex: -1, backgroundColor: 'lightgray' }}>
+        <Button
+          title="Go to Test screen"
+          onPress={() => this.props.navigation.navigate('Test')}
+        />
+      </View>
     );
-    button = null;
+    // button = null;
     return (
-      <View style={styles.container}>
+      <View
+        style={{ flex: 1, alignItems: 'center', alignContent: 'flex-start' }}
+      >
         {toRender}
         {button}
       </View>
@@ -396,7 +450,7 @@ let TransitionConfiguration = () => {
   };
 };
 
-export default StackNavigator(
+const StackNav = StackNavigator(
   {
     Home: {
       screen: HomeScreen,
@@ -409,17 +463,47 @@ export default StackNavigator(
   },
   {
     initialRouteName: 'Home',
-    mode: 'modal',
+    // mode: 'modal',
     headerMode: 'none',
     transitionConfig: TransitionConfiguration,
     onTransitionStart: object => console.log(object, 'start'),
   }
 );
 
+export default class Start extends React.Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <View
+          style={{
+            height: 100,
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'gray',
+          }}
+        >
+          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Test Screen</Text>
+        </View>
+        <View
+          style={{
+            overflow: 'hidden',
+            width: 500,
+            height: 500,
+            backgroundColor: 'lightgray',
+          }}
+        >
+          <StackNav />
+        </View>
+      </View>
+    );
+  }
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
