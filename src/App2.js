@@ -4,15 +4,44 @@
  * @flow
  */
 
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, Easing, Animated } from 'react-native';
+import React, { Component, PureComponent } from 'react';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Animated,
+  Easing,
+  PanResponder,
+  Button,
+} from 'react-native';
 import { StackNavigator } from 'react-navigation';
+
 import { Provider } from 'mobx-react';
 import stores from './stores';
-import Simple1 from './screens/Simple1';
-import Simple2 from './screens/Simple2';
+import Home from './screens/Home';
+import Test from './screens/Test';
 
-const MyTransition = (index, position) => {
+// const RowView = glamorous.view({
+//   flexDirection: 'row',
+//   width: 300,
+//   overflow: 'visible',
+// });
+
+// const ColView = glamorous.view({
+//   width: 30,
+//   height: 30,
+//   alignItems: 'center',
+//   justifyContent: 'center',
+//   overflow: 'visible',
+// });
+
+const SIZE = 30;
+const ELEMENTS = 10;
+const PADDING = 15;
+
+let MyTransition = (index, position) => {
   const inputRange = [index - 1, index, index + 1];
   const outputRange = [0, 1, 1];
   const opacity = position.interpolate({
@@ -27,7 +56,7 @@ const MyTransition = (index, position) => {
 
   return {
     opacity,
-    transform: [{ scaleY }],
+    // transform: [{ scaleY }],
   };
 };
 
@@ -37,9 +66,10 @@ const MyTransitionSpec = {
   timing: Animated.timing,
 };
 
-const TransitionConfiguration = () => {
+let TransitionConfiguration = () => {
   return {
     transitionSpec: MyTransitionSpec,
+    // Define scene interpolation, eq. custom transition
     screenInterpolator: sceneProps => {
       const { position, scene } = sceneProps;
       const { index } = scene;
@@ -50,23 +80,25 @@ const TransitionConfiguration = () => {
 
 const StackNav = StackNavigator(
   {
-    Simple1: {
-      screen: Simple1,
+    Home: {
+      screen: Home,
       index: 0,
     },
-    Simple2: {
-      screen: Simple2,
+    Test: {
+      screen: Test,
       index: 1,
     },
   },
   {
-    initialRouteName: 'Simple1',
+    initialRouteName: 'Home',
+    // mode: 'modal',
     headerMode: 'none',
     transitionConfig: TransitionConfiguration,
+    onTransitionStart: object => console.log(object, 'start'),
   }
 );
 
-export default class Start extends Component {
+export default class Start extends React.Component {
   render() {
     return (
       <View style={styles.container}>
@@ -104,5 +136,37 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+  rowView: {
+    flexDirection: 'row',
+    // width: 300,
+    alignContent: 'center',
+    justifyContent: 'center',
+    overflow: 'visible',
+  },
+  colView: {
+    width: 30,
+    height: 30,
+    alignContent: 'center',
+    justifyContent: 'center',
+    overflow: 'visible',
+  },
+  image: {
+    width: 200,
+    height: 200,
+  },
+  image2: {
+    width: 50,
+    height: 50,
   },
 });
