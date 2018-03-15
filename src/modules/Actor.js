@@ -14,7 +14,7 @@ export default class Actor extends PureComponent {
       default: e.nativeEvent.identifier,
     });
     this.props.addTouchHandler(this.state.touchId, this);
-    console.log(this.state.touchId, 'start', e.currentTarget);
+    console.log(this.state.touchId, 'start', e);
     console.log(this.state.touchId, 'start', e.nativeEvent);
   };
   onMouseDownHandler = e => {
