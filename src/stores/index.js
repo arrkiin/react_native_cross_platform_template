@@ -1,4 +1,3 @@
-import { create } from 'mobx-persist';
 import FirstStore from './firstStore';
 import hydrate from './hydrate';
 

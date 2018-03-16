@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Button } from 'react-native';
 import { observer, inject } from 'mobx-react';
+import { NavigationActions } from 'react-navigation';
 
 @inject('firstStore')
 @observer
@@ -26,8 +27,17 @@ export default class Test extends Component {
           <Text style={{ margin: 10 }}>{this.props.firstStore.data}</Text>
         </View>
         <Button
-          title="Go back"
-          onPress={() => this.props.navigation.goBack()}
+          title="Go to Simple1"
+          onPress={() =>
+            this.props.navigation.navigate({
+              routeName: 'Drawer',
+              action: NavigationActions.navigate({ routeName: 'Simple1' }),
+            })
+          }
+        />
+        <Button
+          title="Go to Drawer"
+          onPress={() => this.props.navigation.navigate('DrawerOpen')}
         />
       </View>
     );

@@ -11,6 +11,7 @@ import { Provider } from 'mobx-react';
 import stores from './stores';
 import Simple1 from './screens/Simple1';
 import Simple2 from './screens/Simple2';
+import Drawer from './screens/Drawer';
 
 const MyTransition = (index, position) => {
   const inputRange = [index - 1, index, index + 1];
@@ -50,17 +51,13 @@ const TransitionConfiguration = () => {
 
 const StackNav = StackNavigator(
   {
-    Simple1: {
-      screen: Simple1,
+    Drawer: {
+      screen: Drawer,
       index: 0,
-    },
-    Simple2: {
-      screen: Simple2,
-      index: 1,
     },
   },
   {
-    initialRouteName: 'Simple1',
+    initialRouteName: 'Drawer',
     headerMode: 'none',
     transitionConfig: TransitionConfiguration,
   }
