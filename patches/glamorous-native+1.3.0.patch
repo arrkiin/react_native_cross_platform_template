@@ -1,0 +1,48 @@
+patch-package
+--- a/node_modules/glamorous-native/src/is-style-prop.js
++++ b/node_modules/glamorous-native/src/is-style-prop.js
+@@ -12,13 +12,11 @@ import {
+   TouchableOpacity,
+   TouchableWithoutFeedback,
+   View,
+-} from 'react-native'
++} from 'react-native';
+ // eslint-disable-next-line max-len
+-import ViewStylePropTypes from 'react-native/Libraries/Components/View/ViewStylePropTypes'
+-import TextStylePropTypes from 'react-native/Libraries/Text/TextStylePropTypes'
+ 
+-const viewStyleProps = Object.keys(ViewStylePropTypes)
+-const textStyleProps = Object.keys(TextStylePropTypes)
++const viewStyleProps = Object.keys(View.propTypes.style);
++const textStyleProps = Object.keys(Text.propTypes.style);
+ 
+ const viewStyleComponents = [
+   Animated.Image,
+@@ -35,22 +33,18 @@ const viewStyleComponents = [
+   TouchableOpacity,
+   TouchableWithoutFeedback,
+   View,
+-]
++];
+ 
+-const textStyleComponents = [
+-  Animated.Text,
+-  Text,
+-  TextInput,
+-]
++const textStyleComponents = [Animated.Text, Text, TextInput];
+ 
+ export default function isStyleProp(element, propName) {
+   if (textStyleComponents.indexOf(element) > -1) {
+-    return textStyleProps.indexOf(propName) > -1
++    return textStyleProps.indexOf(propName) > -1;
+   }
+ 
+   if (viewStyleComponents.indexOf(element) > -1) {
+-    return viewStyleProps.indexOf(propName) > -1
++    return viewStyleProps.indexOf(propName) > -1;
+   }
+ 
+-  return false
++  return false;
+ }
