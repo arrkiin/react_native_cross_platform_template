@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Button, TextInput } from 'react-native';
 import { observer, inject } from 'mobx-react';
 import { NavigationActions } from 'react-navigation';
+import { material } from 'react-native-typography';
 
 @inject('firstStore')
 @observer
@@ -19,7 +20,7 @@ export default class Test extends Component {
           backgroundColor: 'silver',
         }}
       >
-        <Text>Simple1 Screen</Text>
+        <Text style={material.title}>Simple1 Screen</Text>
         <View
           style={{
             backgroundColor: 'white',
@@ -28,10 +29,13 @@ export default class Test extends Component {
           }}
         >
           <TextInput
-            style={{
-              width: 200,
-              margin: 10,
-            }}
+            style={[
+              {
+                width: 200,
+                margin: 10,
+              },
+              material.body2,
+            ]}
             onChangeText={this.onInputChange}
             value={this.props.firstStore.data}
           />

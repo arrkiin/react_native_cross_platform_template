@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Button } from 'react-native';
 import { observer, inject } from 'mobx-react';
 import { NavigationActions } from 'react-navigation';
+import { material } from 'react-native-typography';
 
 @inject('firstStore')
 @observer
@@ -16,7 +17,7 @@ export default class Test extends Component {
           backgroundColor: 'silver',
         }}
       >
-        <Text>Simple2 Screen</Text>
+        <Text style={material.title}>Simple2 Screen</Text>
         <View
           style={{
             backgroundColor: 'white',
@@ -24,7 +25,9 @@ export default class Test extends Component {
             margin: 10,
           }}
         >
-          <Text style={{ margin: 10 }}>{this.props.firstStore.data}</Text>
+          <Text style={[{ margin: 10 }, material.body2]}>
+            {this.props.firstStore.data}
+          </Text>
         </View>
         <Button
           title="Go to Simple1"

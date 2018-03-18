@@ -21,6 +21,7 @@ const babelLoaderConfiguration = {
     ),
     path.resolve(appDirectory, 'node_modules/react-native-dismiss-keyboard'),
     path.resolve(appDirectory, 'node_modules/react-native-safe-area-view'),
+    path.resolve(appDirectory, 'node_modules/react-native-typography'),
     //   path.resolve(appDirectory, 'node_modules/react-native-uncompiled')
   ],
   use: {

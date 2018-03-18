@@ -5,13 +5,21 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Easing, Animated } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Easing,
+  Animated,
+  Dimensions,
+} from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import { Provider } from 'mobx-react';
 import stores from './stores';
 import Simple1 from './screens/Simple1';
 import Simple2 from './screens/Simple2';
 import Drawer from './screens/Drawer';
+import { material } from 'react-native-typography';
 
 const MyTransition = (index, position) => {
   const inputRange = [index - 1, index, index + 1];
@@ -65,6 +73,7 @@ const StackNav = StackNavigator(
 
 export default class Start extends Component {
   render() {
+    console.log(Dimensions.get('window'));
     return (
       <View style={styles.container}>
         <View
@@ -76,7 +85,7 @@ export default class Start extends Component {
             backgroundColor: 'gray',
           }}
         >
-          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Test Screen</Text>
+          <Text style={material.headline}>Test Screen</Text>
         </View>
         <View
           style={{

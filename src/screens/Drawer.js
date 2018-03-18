@@ -1,6 +1,7 @@
 import { DrawerNavigator } from 'react-navigation';
 import Simple1 from './Simple1';
 import Simple2 from './Simple2';
+import { material } from 'react-native-typography';
 
 export default DrawerNavigator(
   {
